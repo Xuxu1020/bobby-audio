@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Temporary media files
+temp/
+
+# Environment files
+.env
+.env.local
+
+# OS files
+Thumbs.db
+.DS_Store
