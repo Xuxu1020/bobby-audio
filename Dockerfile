@@ -1,25 +1,17 @@
-FROM node:20-bookworm-slim
-
-# Install system dependencies: ffmpeg, python3, and certificates
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
-    python3 \
-    ca-certificates \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+FROM node:20-bookworm
 
 WORKDIR /app
 
-# Copy only package.json to avoid Windows lockfile platform conflicts
+# Copy dependency files
 COPY package.json ./
 
-# Fresh installation for Linux environment
-RUN npm install --omit=dev --no-audit --no-fund
+# Install dependencies (unsafe-perm ensures npm allows scripts as root in container)
+RUN npm install --omit=dev --unsafe-perm=true --no-audit
 
-# Copy all application files
+# Copy app code
 COPY . .
 
-# Ensure temp directory exists with proper permissions
+# Ensure temp directory exists
 RUN mkdir -p temp && chmod 777 temp
 
 EXPOSE 3000
