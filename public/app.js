@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnText.textContent = 'Extract & Download MP4';
       } else {
         bitrateGroup.classList.remove('hidden');
-        btnText.textContent = 'Convert to MP3';
+        btnText.textContent = 'Convert that shi cuh';
       }
     }
   }
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       panelUrl.classList.add('hidden');
       formatGroup.classList.add('hidden');
       bitrateGroup.classList.remove('hidden');
-      btnText.textContent = 'Extract MP4 to MP3';
+      btnText.textContent = 'Extract that shi cuh';
     }
   }
 
