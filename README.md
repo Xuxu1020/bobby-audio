@@ -1,4 +1,4 @@
-# 🎬 Bobby the Converter - URL & Video to MP3 / MP4
+# Bobby the Converter - URL & Video to MP3 / MP4
 
 A fast, modern web application to download and convert **Instagram Reels, YouTube, TikTok, SoundCloud** or **local MP4 files** into **MP3 Audio** or **MP4 Video** using bundled FFmpeg.
 
@@ -7,8 +7,8 @@ A fast, modern web application to download and convert **Instagram Reels, YouTub
 ## ✨ Features
 
 - **Multi-Format Extraction**:
-  - 🌐 **From URL**: Download as **MP3 Audio** or high-def **MP4 Video** from Instagram Reels, YouTube, TikTok, and SoundCloud.
-  - 📁 **From Local Files**: Drag & drop or browse your local video files (MP4, MKV, MOV, WebM) to strip video and extract MP3 audio.
+  - **From URL**: Download as **MP3 Audio** or high-def **MP4 Video** from Instagram Reels, YouTube, TikTok, and SoundCloud.
+  - **From Local Files**: Drag & drop or browse your local video files (MP4, MKV, MOV, WebM) to strip video and extract MP3 audio.
 - **Quality Selector**: Choose between **128 kbps** (Compact), **192 kbps** (Recommended), and **320 kbps** (Studio Quality).
 - **Self-Contained**: Automatically uses bundled Windows `ffmpeg.exe` and `yt-dlp` — **no external software installation required**.
 - **Privacy & Storage Friendly**: Automatically cleans temporary files after download.
@@ -16,7 +16,7 @@ A fast, modern web application to download and convert **Instagram Reels, YouTub
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 ### 1. Start the Server
 Open PowerShell in this folder (`c:\Users\Jian Heng\Desktop\Projects\URLtoMP3Converter`) and run:
@@ -32,7 +32,7 @@ http://localhost:3000
 
 ---
 
-## 📖 How to Use
+## How to Use
 
 ### Mode A: Convert from URL
 1. Click the **"Convert from URL"** tab.
@@ -50,7 +50,7 @@ http://localhost:3000
 
 ---
 
-## 🛠️ Project Structure
+## Project Structure
 
 - `server.js` - Express backend API handling file uploads (`multer`), stream extraction (`yt-dlp`), and audio encoding (`fluent-ffmpeg`).
 - `public/index.html` - Web application structure.
