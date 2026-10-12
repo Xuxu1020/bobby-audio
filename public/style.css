@@ -1,9 +1,9 @@
 :root {
   --bg-main: #070a12;
-  --bg-card: rgba(17, 24, 39, 0.75);
-  --bg-card-border: rgba(255, 255, 255, 0.08);
-  --bg-input: rgba(15, 23, 42, 0.65);
-  --bg-input-border: rgba(255, 255, 255, 0.12);
+  --bg-card: rgba(15, 23, 42, 0.55);
+  --bg-card-border: rgba(255, 255, 255, 0.12);
+  --bg-input: rgba(15, 23, 42, 0.5);
+  --bg-input-border: rgba(255, 255, 255, 0.14);
 
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -132,12 +132,12 @@ body {
 /* Converter Card */
 .converter-card {
   background: var(--bg-card);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--bg-card-border);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
 /* Tabs */
