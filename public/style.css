@@ -78,6 +78,8 @@ body {
   max-width: 680px;
   position: relative;
   z-index: 1;
+  margin-top: 4rem; /* Adjust this value to move the container up/down */
+  margin-bottom: 2rem;
 }
 
 /* Header */
