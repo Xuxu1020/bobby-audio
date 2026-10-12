@@ -1,8 +1,7 @@
-FROM node:20-bullseye-slim
+FROM node:20-bookworm-slim
 
-# Install system dependencies including ffmpeg and python
+# Install ca-certificates and python3 (Debian 12 Bookworm)
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg \
     python3 \
     ca-certificates \
     curl \
@@ -13,7 +12,7 @@ WORKDIR /app
 # Copy dependency definitions
 COPY package*.json ./
 
-# Install npm dependencies
+# Install npm dependencies (ffmpeg-static bundles the linux ffmpeg binary)
 RUN npm install --omit=dev
 
 # Copy application source
