@@ -4,7 +4,7 @@ A fast, modern web application to download and convert **Instagram Reels, YouTub
 
 ---
 
-## ✨ Features
+## Features
 
 - **Multi-Format Extraction**:
   - **From URL**: Download as **MP3 Audio** or high-def **MP4 Video** from Instagram Reels, YouTube, TikTok, and SoundCloud.
