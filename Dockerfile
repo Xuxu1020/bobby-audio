@@ -1,7 +1,8 @@
 FROM node:20-bookworm-slim
 
-# Install ca-certificates and python3 (Debian 12 Bookworm)
+# Install system dependencies: ffmpeg, python3, and certificates
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
     python3 \
     ca-certificates \
     curl \
@@ -9,16 +10,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-# Copy dependency definitions
-COPY package*.json ./
+# Copy only package.json to avoid Windows lockfile platform conflicts
+COPY package.json ./
 
-# Install npm dependencies (ffmpeg-static bundles the linux ffmpeg binary)
-RUN npm install --omit=dev
+# Fresh installation for Linux environment
+RUN npm install --omit=dev --no-audit --no-fund
 
-# Copy application source
+# Copy all application files
 COPY . .
 
-# Create temp folder with write permissions
+# Ensure temp directory exists with proper permissions
 RUN mkdir -p temp && chmod 777 temp
 
 EXPOSE 3000

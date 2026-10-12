@@ -8,8 +8,9 @@ const ffmpegStatic = require('ffmpeg-static');
 const ffmpeg = require('fluent-ffmpeg');
 const { v4: uuidv4 } = require('crypto').randomUUID ? { v4: require('crypto').randomUUID } : { v4: () => Math.random().toString(36).substring(2) + Date.now().toString(36) };
 
-// Configure fluent-ffmpeg to use the static binary
-ffmpeg.setFfmpegPath(ffmpegStatic);
+// Configure fluent-ffmpeg to use static binary or system ffmpeg
+const ffmpegBinary = (ffmpegStatic && fs.existsSync(ffmpegStatic)) ? ffmpegStatic : 'ffmpeg';
+ffmpeg.setFfmpegPath(ffmpegBinary);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -142,7 +143,7 @@ app.post('/api/convert-url', async (req, res) => {
       extractAudio: true,
       audioFormat: 'mp3',
       audioQuality: selectedBitrate.replace('k', ''),
-      ffmpegLocation: ffmpegStatic,
+      ffmpegLocation: ffmpegBinary,
       output: outputTemplate,
       noPlaylist: true,
       addMetadata: true,
