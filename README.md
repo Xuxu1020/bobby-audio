@@ -1,4 +1,4 @@
-# 🎵 PulseAudio - URL & MP4 to MP3 Converter
+# 🎵 BobbyAudio - URL & MP4 to MP3 Converter
 
 A fast, modern web application to convert **video/media URLs** (YouTube, SoundCloud, Vimeo, etc.) or **local MP4 files** into high-quality **MP3 audio** using bundled FFmpeg.
 

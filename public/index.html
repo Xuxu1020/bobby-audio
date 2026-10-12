@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PulseAudio | URL & MP4 to MP3 Converter</title>
+  <title>BobbyAudio - URL & MP4 to MP3 Converter</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Ambient background lighting -->
   <div class="ambient-glow glow-1"></div>
@@ -18,15 +22,16 @@
     <!-- Header -->
     <header class="app-header">
       <div class="logo-badge">
-        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 18V5l12-2v13"></path>
           <circle cx="6" cy="18" r="3"></circle>
           <circle cx="18" cy="16" r="3"></circle>
         </svg>
-        <span class="logo-text">PulseAudio</span>
+        <span class="logo-text">BobbyAudio</span>
       </div>
-      <h1 class="main-title">Fast & Clean <span class="gradient-text">MP3 Converter</span></h1>
-      <p class="subtitle">Extract studio-grade MP3 audio from any video URL or upload an MP4 file directly.</p>
+      <h1 class="main-title">Very ez <span class="gradient-text">MP3 Converter</span></h1>
+      <p class="subtitle">Extract MP3 audio from any video URL or uploaded MP4 file.</p>
     </header>
 
     <!-- Main Card -->
@@ -34,14 +39,16 @@
       <!-- Tabs -->
       <div class="tabs-nav" role="tablist">
         <button id="tabBtnUrl" class="tab-btn active" role="tab" aria-selected="true" data-tab="url">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
             <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
           </svg>
           Convert from URL
         </button>
         <button id="tabBtnFile" class="tab-btn" role="tab" aria-selected="false" data-tab="file">
-          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="17 8 12 3 7 8"></polyline>
             <line x1="12" y1="3" x2="12" y2="15"></line>
@@ -58,15 +65,11 @@
             <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
-              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+              </path>
             </svg>
-            <input 
-              type="url" 
-              id="urlInput" 
-              placeholder="Paste YouTube, Vimeo, SoundCloud or web video URL..." 
-              autocomplete="off"
-              spellcheck="false"
-            />
+            <input type="url" id="urlInput" placeholder="Paste your god damn URL" autocomplete="off"
+              spellcheck="false" />
             <button id="btnPaste" class="btn-ghost" title="Paste from clipboard">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -94,8 +97,9 @@
       <section id="panelFile" class="tab-panel hidden" role="tabpanel">
         <label class="input-label">Local Video File</label>
         <div id="dropZone" class="drop-zone">
-          <input type="file" id="fileInput" accept="video/mp4,video/*,.mp4,.m4v,.mov,.mkv,.webm" class="file-input-hidden" />
-          
+          <input type="file" id="fileInput" accept="video/mp4,video/*,.mp4,.m4v,.mov,.mkv,.webm"
+            class="file-input-hidden" />
+
           <div id="dropEmptyState" class="drop-content">
             <div class="upload-icon-circle">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -104,8 +108,9 @@
                 <line x1="12" y1="3" x2="12" y2="15"></line>
               </svg>
             </div>
-            <p class="drop-main-text">Drag & drop your <strong>.mp4</strong> or video file here</p>
-            <p class="drop-sub-text">or <button type="button" id="btnBrowse" class="link-btn">browse your computer</button> (up to 500 MB)</p>
+            <p class="drop-main-text">Drag and drop your god damn<strong>.mp4</strong> or video file here</p>
+            <p class="drop-sub-text">or <button type="button" id="btnBrowse" class="link-btn">browse your
+                computer</button> (up to 500 MB)</p>
           </div>
 
           <!-- Selected File Badge -->
@@ -205,7 +210,7 @@
             </svg>
             Download MP3
           </a>
-          <button id="btnReset" class="btn-secondary">Convert Another</button>
+          <button id="btnReset" class="btn-secondary">Another one</button>
         </div>
       </div>
     </main>
@@ -215,15 +220,7 @@
       <div class="features-row">
         <div class="feature-item">
           <span class="feature-dot"></span>
-          Supports YouTube, SoundCloud, Vimeo, Direct Streams & MP4 Files
-        </div>
-        <div class="feature-item">
-          <span class="feature-dot"></span>
-          High-performance local FFmpeg conversion
-        </div>
-        <div class="feature-item">
-          <span class="feature-dot"></span>
-          Privacy friendly • Auto-cleaning temp storage
+          I am bobby
         </div>
       </div>
     </footer>
@@ -234,4 +231,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>
