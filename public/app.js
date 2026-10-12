@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectedFileSize = document.getElementById('selectedFileSize');
   const btnRemoveFile = document.getElementById('btnRemoveFile');
 
+  const formatGroup = document.getElementById('formatGroup');
+  const bitrateGroup = document.getElementById('bitrateGroup');
+  const formatChips = document.querySelectorAll('.format-chip');
   const bitrateChips = document.querySelectorAll('.bitrate-chip');
   const btnConvert = document.getElementById('btnConvert');
   const btnSpinner = document.getElementById('btnSpinner');
@@ -41,9 +44,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const toast = document.getElementById('toast');
 
   let currentMode = 'url'; // 'url' | 'file'
+  let currentFormat = 'mp3'; // 'mp3' | 'mp4'
   let selectedFile = null;
   let debounceTimer = null;
   let progressInterval = null;
+
+  // Format Switcher (MP3 vs MP4)
+  formatChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      formatChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const radio = chip.querySelector('input[type="radio"]');
+      if (radio) {
+        radio.checked = true;
+        currentFormat = radio.value;
+      }
+      updateUIForFormat();
+    });
+  });
+
+  function updateUIForFormat() {
+    if (currentMode === 'url') {
+      if (currentFormat === 'mp4') {
+        bitrateGroup.classList.add('hidden');
+        btnText.textContent = 'Extract & Download MP4';
+      } else {
+        bitrateGroup.classList.remove('hidden');
+        btnText.textContent = 'Convert to MP3';
+      }
+    }
+  }
 
   // 1. Tab Switching
   function switchTab(mode) {
@@ -58,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       panelUrl.classList.remove('hidden');
       panelFile.classList.add('hidden');
-      btnText.textContent = 'Convert URL to MP3';
+      formatGroup.classList.remove('hidden');
+      updateUIForFormat();
     } else {
       tabBtnFile.classList.add('active');
       tabBtnFile.setAttribute('aria-selected', 'true');
@@ -67,6 +98,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       panelFile.classList.remove('hidden');
       panelUrl.classList.add('hidden');
+      formatGroup.classList.add('hidden');
+      bitrateGroup.classList.remove('hidden');
       btnText.textContent = 'Extract MP4 to MP3';
     }
   }
@@ -297,11 +330,19 @@ document.addEventListener('DOMContentLoaded', () => {
     statusSection.classList.add('hidden');
   }
 
-  function showResult(downloadId, filename, fileSize) {
+  function showResult(downloadId, filename, fileSize, format) {
+    const isVideo = format === 'mp4' || filename.toLowerCase().endsWith('.mp4');
     resultFileName.textContent = filename;
-    resultFileSize.textContent = `${formatBytes(fileSize)} • High Quality MP3`;
+    resultFileSize.textContent = `${formatBytes(fileSize)} • ${isVideo ? 'High-Def MP4 Video' : 'High Quality MP3 Audio'}`;
     btnDownload.href = `/api/download/${downloadId}`;
     btnDownload.setAttribute('download', filename);
+    btnDownload.innerHTML = `
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download ${isVideo ? 'MP4 Video' : 'MP3'}`;
     resultCard.classList.remove('hidden');
   }
 
@@ -313,23 +354,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (currentMode === 'url') {
       const url = urlInput.value.trim();
       if (!url) {
-        showToast('Please enter a video or media URL first.', 'error');
+        showToast('Please enter a video or Reel URL first.', 'error');
         urlInput.focus();
         return;
       }
 
       setLoading(true);
-      startProgressAnimation([
-        'Connecting & downloading media stream...',
-        'Extracting audio with FFmpeg...',
-        'Encoding 320kbps MP3 tags...'
-      ]);
+      const isMp4 = currentFormat === 'mp4';
+      if (isMp4) {
+        startProgressAnimation([
+          'Connecting to Instagram / media server...',
+          'Downloading video and audio streams...',
+          'Merging into high-def MP4 file...'
+        ]);
+      } else {
+        startProgressAnimation([
+          'Connecting & downloading media stream...',
+          'Extracting audio with FFmpeg...',
+          'Encoding high quality MP3 tags...'
+        ]);
+      }
 
       try {
         const response = await fetch('/api/convert-url', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, bitrate })
+          body: JSON.stringify({ url, format: currentFormat, bitrate })
         });
 
         const data = await response.json();
@@ -339,8 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.details || data.error || 'Conversion failed');
         }
 
-        showResult(data.downloadId, data.filename, data.fileSize);
-        showToast('URL converted successfully! Click Download.', 'success');
+        showResult(data.downloadId, data.filename, data.fileSize, data.format || currentFormat);
+        showToast(isMp4 ? 'Reel/Video extracted to MP4! Click Download.' : 'Audio extracted to MP3! Click Download.', 'success');
       } catch (err) {
         stopProgress();
         showToast(err.message, 'error');
@@ -379,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error(data.details || data.error || 'Conversion failed');
         }
 
-        showResult(data.downloadId, data.filename, data.fileSize);
+        showResult(data.downloadId, data.filename, data.fileSize, 'mp3');
         showToast('MP4 converted successfully! Click Download.', 'success');
       } catch (err) {
         stopProgress();

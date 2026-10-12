@@ -122,13 +122,14 @@ app.post('/api/info', async (req, res) => {
   }
 });
 
-// 2. Convert from URL to MP3
+// 2. Convert from URL to MP3 or MP4 (Instagram Reels, YouTube, TikTok, etc.)
 app.post('/api/convert-url', async (req, res) => {
-  const { url, bitrate = '192k' } = req.body;
+  const { url, format = 'mp3', bitrate = '192k' } = req.body;
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'Valid URL is required' });
   }
 
+  const isMp4 = format.toLowerCase() === 'mp4';
   const validBitrates = ['128k', '192k', '256k', '320k'];
   const selectedBitrate = validBitrates.includes(bitrate) ? bitrate : '192k';
 
@@ -136,25 +137,35 @@ app.post('/api/convert-url', async (req, res) => {
     const downloadId = uuidv4();
     const outputTemplate = path.join(TEMP_DIR, `${downloadId}_%(title)s.%(ext)s`);
 
-    console.log(`[URL] Starting download for: ${url} (Bitrate: ${selectedBitrate})`);
-
-    // Fetch video title first or extract directly
-    await youtubedl(url.trim(), {
-      extractAudio: true,
-      audioFormat: 'mp3',
-      audioQuality: selectedBitrate.replace('k', ''),
-      ffmpegLocation: ffmpegBinary,
-      output: outputTemplate,
-      noPlaylist: true,
-      addMetadata: true,
-    });
+    if (isMp4) {
+      console.log(`[URL] Downloading video (MP4) for: ${url}`);
+      await youtubedl(url.trim(), {
+        format: 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+        mergeOutputFormat: 'mp4',
+        ffmpegLocation: ffmpegBinary,
+        output: outputTemplate,
+        noPlaylist: true,
+      });
+    } else {
+      console.log(`[URL] Downloading audio (MP3) for: ${url} (Bitrate: ${selectedBitrate})`);
+      await youtubedl(url.trim(), {
+        extractAudio: true,
+        audioFormat: 'mp3',
+        audioQuality: selectedBitrate.replace('k', ''),
+        ffmpegLocation: ffmpegBinary,
+        output: outputTemplate,
+        noPlaylist: true,
+        addMetadata: true,
+      });
+    }
 
     // Find the generated file in TEMP_DIR matching downloadId
+    const targetExt = isMp4 ? '.mp4' : '.mp3';
     const files = fs.readdirSync(TEMP_DIR);
-    const convertedFile = files.find(f => f.startsWith(`${downloadId}_`) && f.endsWith('.mp3'));
+    const convertedFile = files.find(f => f.startsWith(`${downloadId}_`) && f.endsWith(targetExt));
 
     if (!convertedFile) {
-      throw new Error('Converted MP3 file was not found.');
+      throw new Error(`Converted ${isMp4 ? 'MP4' : 'MP3'} file was not found.`);
     }
 
     const fullPath = path.join(TEMP_DIR, convertedFile);
@@ -173,12 +184,13 @@ app.post('/api/convert-url', async (req, res) => {
       downloadId,
       filename: displayName,
       fileSize: stats.size,
-      message: 'Conversion completed successfully'
+      format: isMp4 ? 'mp4' : 'mp3',
+      message: `${isMp4 ? 'MP4 video' : 'MP3 audio'} extracted successfully`
     });
   } catch (err) {
     console.error('[URL] Conversion error:', err);
     return res.status(500).json({
-      error: 'Failed to convert URL to MP3.',
+      error: `Failed to extract ${isMp4 ? 'MP4 video' : 'MP3 audio'} from URL.`,
       details: err.message
     });
   }
@@ -246,8 +258,9 @@ app.get('/api/download/:id', (req, res) => {
     return res.status(404).send('File not found or has expired. Please convert again.');
   }
 
+  const isVideo = item.filename.toLowerCase().endsWith('.mp4');
   res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(item.filename)}"`);
-  res.setHeader('Content-Type', 'audio/mpeg');
+  res.setHeader('Content-Type', isVideo ? 'video/mp4' : 'audio/mpeg');
 
   const stream = fs.createReadStream(item.filePath);
   stream.pipe(res);

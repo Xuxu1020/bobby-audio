@@ -1,18 +1,18 @@
-# 🎵 BobbyAudio - URL & MP4 to MP3 Converter
+# 🎬 Bobby the Converter - URL & Video to MP3 / MP4
 
-A fast, modern web application to convert **video/media URLs** (YouTube, SoundCloud, Vimeo, etc.) or **local MP4 files** into high-quality **MP3 audio** using bundled FFmpeg.
+A fast, modern web application to download and convert **Instagram Reels, YouTube, TikTok, SoundCloud** or **local MP4 files** into **MP3 Audio** or **MP4 Video** using bundled FFmpeg.
 
 ---
 
 ## ✨ Features
 
-- **Dual Conversion Modes**:
-  - 🌐 **From URL**: Paste any YouTube, SoundCloud, or direct video/audio URL.
-  - 📁 **From Local MP4**: Drag & drop or browse your local video files (MP4, MKV, MOV, WebM).
+- **Multi-Format Extraction**:
+  - 🌐 **From URL**: Download as **MP3 Audio** or high-def **MP4 Video** from Instagram Reels, YouTube, TikTok, and SoundCloud.
+  - 📁 **From Local Files**: Drag & drop or browse your local video files (MP4, MKV, MOV, WebM) to strip video and extract MP3 audio.
 - **Quality Selector**: Choose between **128 kbps** (Compact), **192 kbps** (Recommended), and **320 kbps** (Studio Quality).
 - **Self-Contained**: Automatically uses bundled Windows `ffmpeg.exe` and `yt-dlp` — **no external software installation required**.
 - **Privacy & Storage Friendly**: Automatically cleans temporary files after download.
-- **Sleek UI**: Modern dark-mode interface with live preview, real-time conversion status, and direct download links.
+- **Sleek UI**: Modern translucent dark-mode interface with live preview, real-time conversion status, and direct download links.
 
 ---
 

@@ -33,7 +33,7 @@
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background-color: var(--bg-main);
-  background: 
+  background:
     linear-gradient(rgba(7, 10, 18, 0.55), rgba(7, 10, 18, 0.7)),
     url('background.png') no-repeat center center fixed;
   background-size: cover;
@@ -78,7 +78,7 @@ body {
   max-width: 680px;
   position: relative;
   z-index: 1;
-  margin-top: 4rem; /* Adjust this value to move the container up/down */
+  margin-top: 4rem;
   margin-bottom: 2rem;
 }
 
@@ -457,9 +457,60 @@ body {
   height: 18px;
 }
 
+/* Format Selector (MP3 vs MP4) */
+.format-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.format-chip {
+  cursor: pointer;
+  position: relative;
+}
+
+.format-chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.format-chip-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--bg-input);
+  border: 1px solid var(--bg-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.format-icon {
+  width: 18px;
+  height: 18px;
+  stroke: var(--accent-cyan);
+}
+
+.format-chip:hover .format-chip-content {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.format-chip.active .format-chip-content,
+.format-chip input:checked + .format-chip-content {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: var(--primary);
+  box-shadow: 0 0 14px rgba(99, 102, 241, 0.25);
+  color: #fff;
+}
+
 /* Options / Bitrate Chips */
 .options-group {
-  margin-top: 1.75rem;
+  margin-top: 1.5rem;
 }
 
 .bitrate-selector {
