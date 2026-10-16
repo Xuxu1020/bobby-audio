@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnText.textContent = 'Extract & Download MP4';
       } else {
         bitrateGroup.classList.remove('hidden');
-        btnText.textContent = 'Convert that shi cuh';
+        btnText.textContent = 'Convert that shi';
       }
     }
   }
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function switchTab(mode) {
     currentMode = mode;
     hideResult();
-    
+
     if (mode === 'url') {
       tabBtnUrl.classList.add('active');
       tabBtnUrl.setAttribute('aria-selected', 'true');
@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
       panelUrl.classList.add('hidden');
       formatGroup.classList.add('hidden');
       bitrateGroup.classList.remove('hidden');
-      btnText.textContent = 'Extract that shi cuh';
+      btnText.textContent = 'Extract that shi';
     }
   }
 
