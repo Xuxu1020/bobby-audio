@@ -8,6 +8,35 @@ const ffmpegStatic = require('ffmpeg-static');
 const ffmpeg = require('fluent-ffmpeg');
 const { v4: uuidv4 } = require('crypto').randomUUID ? { v4: require('crypto').randomUUID } : { v4: () => Math.random().toString(36).substring(2) + Date.now().toString(36) };
 
+// ── Logging setup ─────────────────────────────────────────────────────────────
+const LOGS_DIR = path.join(__dirname, 'logs');
+const LOG_FILE = path.join(LOGS_DIR, 'url_log.json');
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'bobby123';
+
+if (!fs.existsSync(LOGS_DIR)) fs.mkdirSync(LOGS_DIR, { recursive: true });
+if (!fs.existsSync(LOG_FILE)) fs.writeFileSync(LOG_FILE, '[]', 'utf8');
+
+function readLogs() {
+  try { return JSON.parse(fs.readFileSync(LOG_FILE, 'utf8')); }
+  catch { return []; }
+}
+
+function appendLog(entry) {
+  const logs = readLogs();
+  logs.unshift(entry); // newest first
+  fs.writeFileSync(LOG_FILE, JSON.stringify(logs, null, 2), 'utf8');
+}
+
+function getClientIp(req) {
+  return (
+    req.headers['x-forwarded-for']?.split(',')[0].trim() ||
+    req.headers['x-real-ip'] ||
+    req.socket?.remoteAddress ||
+    'unknown'
+  );
+}
+// ──────────────────────────────────────────────────────────────────────────────
+
 // Configure fluent-ffmpeg to use static binary or system ffmpeg
 const ffmpegBinary = (ffmpegStatic && fs.existsSync(ffmpegStatic)) ? ffmpegStatic : 'ffmpeg';
 ffmpeg.setFfmpegPath(ffmpegBinary);
@@ -96,6 +125,17 @@ app.post('/api/info', async (req, res) => {
     return res.status(400).json({ error: 'Valid URL is required' });
   }
 
+  const logEntry = {
+    id: uuidv4(),
+    timestamp: new Date().toISOString(),
+    ip: getClientIp(req),
+    url: url.trim(),
+    action: 'info_fetch',
+    format: null,
+    status: 'pending',
+    error: null,
+  };
+
   try {
     const output = await youtubedl(url.trim(), {
       dumpSingleJson: true,
@@ -112,9 +152,14 @@ app.post('/api/info', async (req, res) => {
       webpage_url: output.webpage_url || url,
     };
 
+    logEntry.status = 'success';
+    appendLog(logEntry);
     return res.json(info);
   } catch (err) {
     console.error('Info extraction error:', err.message);
+    logEntry.status = 'error';
+    logEntry.error = err.message;
+    appendLog(logEntry);
     return res.status(400).json({
       error: 'Unable to fetch media info. Ensure the URL is public and valid.',
       details: err.message
@@ -132,6 +177,18 @@ app.post('/api/convert-url', async (req, res) => {
   const isMp4 = format.toLowerCase() === 'mp4';
   const validBitrates = ['128k', '192k', '256k', '320k'];
   const selectedBitrate = validBitrates.includes(bitrate) ? bitrate : '192k';
+
+  const logEntry = {
+    id: uuidv4(),
+    timestamp: new Date().toISOString(),
+    ip: getClientIp(req),
+    url: url.trim(),
+    action: 'convert',
+    format: isMp4 ? 'mp4' : 'mp3',
+    bitrate: isMp4 ? null : selectedBitrate,
+    status: 'pending',
+    error: null,
+  };
 
   try {
     const downloadId = uuidv4();
@@ -180,6 +237,9 @@ app.post('/api/convert-url', async (req, res) => {
 
     const stats = fs.statSync(fullPath);
 
+    logEntry.status = 'success';
+    appendLog(logEntry);
+
     return res.json({
       downloadId,
       filename: displayName,
@@ -189,6 +249,9 @@ app.post('/api/convert-url', async (req, res) => {
     });
   } catch (err) {
     console.error('[URL] Conversion error:', err);
+    logEntry.status = 'error';
+    logEntry.error = err.message;
+    appendLog(logEntry);
     return res.status(500).json({
       error: `Failed to extract ${isMp4 ? 'MP4 video' : 'MP3 audio'} from URL.`,
       details: err.message
@@ -274,10 +337,39 @@ app.get('/api/download/:id', (req, res) => {
   });
 });
 
+// ── Admin routes ──────────────────────────────────────────────────────────────
+
+// Middleware: verify admin password from header or query param
+function requireAdmin(req, res, next) {
+  const token = req.headers['x-admin-password'] || req.query.password;
+  if (token !== ADMIN_PASSWORD) {
+    return res.status(401).json({ error: 'Unauthorized. Wrong admin password.' });
+  }
+  next();
+}
+
+// GET /api/admin/logs — return all log entries
+app.get('/api/admin/logs', requireAdmin, (req, res) => {
+  res.json(readLogs());
+});
+
+// DELETE /api/admin/logs — clear all logs
+app.delete('/api/admin/logs', requireAdmin, (req, res) => {
+  fs.writeFileSync(LOG_FILE, '[]', 'utf8');
+  res.json({ message: 'Logs cleared.' });
+});
+
+// Serve the admin page (password gate handled client-side)
+app.get('/whyareyouhere', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+// ──────────────────────────────────────────────────────────────────────────────
+
 app.listen(PORT, () => {
   console.log(`\n=================================================`);
   console.log(`🚀 URL & MP4 to MP3 Converter Server running!`);
   console.log(`🌐 Local Web UI: http://localhost:${PORT}`);
   console.log(`🎵 Ready to convert URLs & local MP4 files to MP3`);
+  console.log(`🔐 Admin panel:  http://localhost:${PORT}/whyareyouhere`);
   console.log(`=================================================\n`);
 });
